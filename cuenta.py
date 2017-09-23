@@ -1,10 +1,11 @@
 class Cuenta:
 	def __init__(self, codigo, nombre):
 		self.saldo = 0
-		self.padre = " "
-		self.nombre = nombre
+		self.padre = ""
+		self.nombre = str (nombre) if type(nombre) is long else nombre.encode('ascii', 'ignore').replace("'","")
+#		self.nombre = str (nombre) if type(nombre) is long else nombre
 		self.naturaleza = " "
-		self.descripcion =  nombre
+		self.descripcion =  self.nombre
 		self.codigo = codigo
 		self.nivel = 0
 		self.cuentaBancaria = 0
@@ -17,7 +18,7 @@ class Cuenta:
 		else:
 			father = ""
 			for i in range(numPadres):
-				father = father + "-" +padres[i]
+				father += "-" +padres[i]
 		return father[1:]
 	
 	def defineNivel(self, codigo):
@@ -25,7 +26,6 @@ class Cuenta:
 
 	def defineNaturaleza(self, x):
 		return {
-			'0': 'Sin naturaleza',
         		'1': 'debito',
         		'2': 'credito',
 			'3': 'credito',
@@ -35,7 +35,7 @@ class Cuenta:
 			'7': 'debito',
 			'8': 'debito',
 			'9': 'credito',
-    		}[x]
+    		}.get(x, None)
 
 
 

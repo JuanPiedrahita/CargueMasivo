@@ -27,19 +27,26 @@ def main():
         parser.error('Parametro host_serverBD no especificado')
     if not options.path_xlsx:
         parser.error('Parametro path_csv no especificado')
-
-    connect = Connection(options)
-    postgres_connect = connect.get_connection()
-    cursor = connect.get_cursor()
-
-    print "Conexion exitosa"
-    print "Inicia Cargue"
     
-    cuentas = CuentaContable(cursor, options.path_xlsx)
-    cuentas.cargarCuentas("archivosExcel/resultadoCargue.xlsx")
+    postgres_connect = None
+    try:
+        connect = Connection(options)
+        postgres_connect = connect.get_connection()
+        cursor = connect.get_cursor()
+
+        print "Conexion exitosa"
+        print "Inicia Cargue"
     
+        cuentas = CuentaContable(cursor, options.path_xlsx)
+        cuentas.cargarCuentas("archivosExcel/resultadoCargue.xlsx")
 
-
+        postgres_connect.commit()
+    except Exception as error:
+	postgres_connect.rollback()
+        print(error)
+    finally:
+        if postgres_connect is not None:
+            postgres_connect.close()
 
 
 
