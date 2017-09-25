@@ -2,7 +2,9 @@ class Cuenta:
 	def __init__(self, codigo, nombre):
 		self.saldo = 0
 		self.padre = ""
-		self.nombre = str (nombre) if type(nombre) is long else nombre.encode('ascii', 'ignore').replace("'","")
+		self.nombre = str (nombre) if type(nombre) is long else nombre
+#		self.nombre = str (nombre) if type(nombre) is long else nombre.encode('ascii', 'ignore').replace("'","")
+#               self.nombre = str (nombre) if type(nombre) is long else nombre.decode('ascii','\xa5')
 #		self.nombre = str (nombre) if type(nombre) is long else nombre
 		self.naturaleza = " "
 		self.descripcion =  self.nombre

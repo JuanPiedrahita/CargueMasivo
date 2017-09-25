@@ -29,7 +29,7 @@ class CuentaContable():
 			error = []
 			if cuenta.idCuenta:
 				error.append("La cuenta ya existe.")
-			if len(cuenta.nombre.replace("'",""))<3:
+			if len(cuenta.nombre.replace(" ",""))<3:
 				error.append("El nombre de la cuenta no es valido.")
 			if cuenta.naturaleza is None:
 				error.append("La naturaleza de la cuenta no esta definida.")
@@ -37,8 +37,12 @@ class CuentaContable():
 				error.append("El padre no se encuentra registrado.")
 
 			if not error:
-				self.insertCuenta(cuenta)
-				hojaCompletos.append([cuenta.codigo, cuenta.nombre, cuenta.padre, cuenta.naturaleza, cuenta.nivel, cuenta.idCuenta, cuenta.idPadre, cuenta.idRelacion])
+				try:
+					self.insertCuenta(cuenta)
+					hojaCompletos.append([cuenta.codigo, cuenta.nombre, cuenta.padre, cuenta.naturaleza, cuenta.nivel, cuenta.idCuenta, cuenta.idPadre, cuenta.idRelacion])
+				except Exception as errores:
+					print "Error de nombre caracter"
+					hojaErrores.append([cuenta.codigo , "Error de nombre caracter", cuenta.nombre])	
 			else:	
 				print "Error: ", ' '.join(error)
 				hojaErrores.append([cuenta.codigo , ' '.join(error), cuenta.nombre])
