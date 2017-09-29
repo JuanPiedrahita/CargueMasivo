@@ -15,9 +15,10 @@ class Connection():
             cadena_conect = "dbname={} user={} password={} host={} ".format(dbname, user, password, host)
             try:
                 self.connection = psycopg2.connect(cadena_conect)
+		self.connection.commit()
             except Exception as e:
                 print "I am unable to connect to the database"
-                print e       
+                print e     
         return self.connection
     
     def get_cursor(self):

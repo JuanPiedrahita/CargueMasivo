@@ -18,13 +18,13 @@ class CuentaContable():
 		for fila in hojaData.rows:
 			code = self.cleanIdCuenta(hojaData.cell(row=rowCounter,column=1).value)
 			nombreCuenta = hojaData.cell(row=rowCounter,column=2).value
-			rowCounter += 1
 			print "Evaluando cuenta "+code	
 			cuenta = Cuenta(code, nombreCuenta)
 			cuenta.padre = cuenta.definePadre(cuenta.codigo)
 			cuenta.idCuenta = self.getCuentaById(cuenta.codigo)
 			cuenta.idPadre = self.getCuentaById(cuenta.padre)
 			cuenta.naturaleza = hojaData.cell(row=rowCounter,column=3).value
+			rowCounter += 1
 			if not cuenta.naturaleza:
 				cuenta.naturaleza = cuenta.defineNaturaleza(cuenta.codigo[:1])
 			cuenta.nivel = cuenta.defineNivel(cuenta.codigo)
@@ -44,7 +44,8 @@ class CuentaContable():
 					hojaCompletos.append([cuenta.codigo, cuenta.nombre, cuenta.padre, cuenta.naturaleza, cuenta.nivel, cuenta.idCuenta, cuenta.idPadre, cuenta.idRelacion])
 				except Exception as errores:
 					print "Error de nombre caracter"
-					hojaErrores.append([cuenta.codigo , "Error de nombre caracter", cuenta.nombre])	
+					print errores
+					hojaErrores.append([cuenta.codigo , "Error de nombre caracter", cuenta.nombre, cuenta.nivel])	
 			else:	
 				print "Error: ", ' '.join(error)
 				hojaErrores.append([cuenta.codigo , ' '.join(error), cuenta.nombre])
@@ -60,10 +61,13 @@ class CuentaContable():
 		cuenta.idCuenta = self.cursor.fetchone()[0]
 # 		se inserta relacion padre hijo con el plan de cuentas 2
 		plan_cuentas = 2
-		self.cursor.execute(""" insert into financiera.estructura_cuentas (cuenta_padre, cuenta_hijo, plan_cuentas)
-			values ({0},{1},{2})
-			returning id""".format(cuenta.idPadre, cuenta.idCuenta, plan_cuentas))
-		cuenta.idRelacion = self.cursor.fetchone()[0]
+		cuenta.idRelacion = 0
+		if cuenta.padre:
+			self.cursor.execute(""" insert into financiera.estructura_cuentas (cuenta_padre, cuenta_hijo, plan_cuentas)
+				values ({0},{1},{2})
+				returning id""".format(cuenta.idPadre, cuenta.idCuenta, plan_cuentas))
+			cuenta.idRelacion = self.cursor.fetchone()[0]
+
 		print "Se inserta la cuenta", cuenta.codigo, ", id:",cuenta.idCuenta
 		print "Se inserta relacion", cuenta.idRelacion ," con padre", cuenta.padre,"con id:", cuenta.idPadre
 
