@@ -24,7 +24,9 @@ class CuentaContable():
 			cuenta.padre = cuenta.definePadre(cuenta.codigo)
 			cuenta.idCuenta = self.getCuentaById(cuenta.codigo)
 			cuenta.idPadre = self.getCuentaById(cuenta.padre)
-			cuenta.naturaleza = cuenta.defineNaturaleza(cuenta.codigo[:1])
+			cuenta.naturaleza = hojaData.cell(row=rowCounter,column=3).value
+			if not cuenta.naturaleza:
+				cuenta.naturaleza = cuenta.defineNaturaleza(cuenta.codigo[:1])
 			cuenta.nivel = cuenta.defineNivel(cuenta.codigo)
 			error = []
 			if cuenta.idCuenta:
@@ -33,7 +35,7 @@ class CuentaContable():
 				error.append("El nombre de la cuenta no es valido.")
 			if cuenta.naturaleza is None:
 				error.append("La naturaleza de la cuenta no esta definida.")
-			if not cuenta.idPadre:
+			if not cuenta.idPadre and cuenta.nivel != 1:
 				error.append("El padre no se encuentra registrado.")
 
 			if not error:
@@ -69,6 +71,8 @@ class CuentaContable():
 		idCuentaErroneo = idCuentaErroneo.replace(" ","")
 		head = idCuentaErroneo[:1]
 		tail = idCuentaErroneo[1:]
+		if not tail:
+			return head
 		return head+"-"+tail
 
 	def getCuentaById(self, idCuenta):

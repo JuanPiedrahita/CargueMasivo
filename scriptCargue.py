@@ -31,9 +31,11 @@ def main():
     postgres_connect = None
     try:
         connect = Connection(options)
+	
+
         postgres_connect = connect.get_connection()
         cursor = connect.get_cursor()
-
+	
         print "Conexion exitosa"
         print "Inicia Cargue"
     
